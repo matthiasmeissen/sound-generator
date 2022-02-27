@@ -1,5 +1,3 @@
 # Teensyth
 
-First steps into electronics and hardware
-
-Trying to build a synthsizer with a teensy microcontroller and some hardware things.
+A synthesiser with a teensy microcontroller to learn about electronics and hardware
