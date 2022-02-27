@@ -1,6 +1,5 @@
 #include <Arduino.h>
-
-int number = 1;
+#include <MIDI.h>
 
 void blink() {
   digitalWrite(LED_BUILTIN, HIGH);
@@ -9,16 +8,24 @@ void blink() {
   delay(1000);
 }
 
+void makeNote(int note, int duration) {
+  usbMIDI.sendNoteOn(note, 127, 1);
+  delay(duration);
+  usbMIDI.sendNoteOff(note, 127, 1);
+
+  Serial.println("Note played");
+}
+
 void setup() {
+  // initialize LED digital pin as an output.
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(38400);
 }
 
 void loop() {
-  // Print number counting upwards
-  Serial.println(number);
-  number += 1;
-
-  // Use the blink function to show LED
+  // Uses the LED
   blink();
+
+  // Plays a note
+  makeNote(60, 800);
 }
