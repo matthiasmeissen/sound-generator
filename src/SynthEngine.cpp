@@ -1,5 +1,5 @@
 /* ------------------------------------------------------------
-name: "SineOscillator", "FaustDSP"
+name: "SynthEngine", "FaustDSP"
 Code generated with Faust 2.38.16 (https://faust.grame.fr)
 Compilation options: -a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -es 1 -mcd 16 -uim -single -ftz 0 
 ------------------------------------------------------------ */
@@ -44,7 +44,7 @@ Compilation options: -a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -e
 
 #include <string.h> // for memset
 
-#include "SineOscillator.h"
+#include "SynthEngine.h"
 
 // IMPORTANT: in order for MapUI to work, the teensy linker must be g++
 /************************** BEGIN MapUI.h **************************/
@@ -9236,10 +9236,10 @@ class mydsp : public dsp {
 	
  public:
 	
-	FAUSTFLOAT fEntry0;
+	FAUSTFLOAT fHslider0;
 	int fSampleRate;
 	float fConst1;
-	FAUSTFLOAT fEntry1;
+	FAUSTFLOAT fHslider1;
 	float fRec1[2];
 	float fConst2;
 	FAUSTFLOAT fButton0;
@@ -9263,7 +9263,7 @@ class mydsp : public dsp {
 		m->declare("envelopes_lib_license", "LGPL with exception");
 		m->declare("envelopes_lib_name", "Faust Envelope Library");
 		m->declare("envelopes_lib_version", "0.1");
-		m->declare("filename", "SineOscillator.dsp");
+		m->declare("filename", "SynthEngine.dsp");
 		m->declare("library_path0", "/libraries/stdfaust.lib");
 		m->declare("library_path1", "/libraries/oscillators.lib");
 		m->declare("library_path2", "/libraries/basics.lib");
@@ -9275,7 +9275,7 @@ class mydsp : public dsp {
 		m->declare("maths_lib_license", "LGPL with exception");
 		m->declare("maths_lib_name", "Faust Math Library");
 		m->declare("maths_lib_version", "2.5");
-		m->declare("name", "SineOscillator");
+		m->declare("name", "SynthEngine");
 		m->declare("oscillators_lib_name", "Faust Oscillator Library");
 		m->declare("oscillators_lib_version", "0.3");
 		m->declare("platform_lib_name", "Generic Platform Library");
@@ -9300,14 +9300,14 @@ class mydsp : public dsp {
 		fSampleRate = sample_rate;
 		float fConst0 = std::min<float>(192000.0f, std::max<float>(1.0f, float(fSampleRate)));
 		fConst1 = (440.0f / fConst0);
-		fConst2 = (1.0f / std::max<float>(1.0f, (0.00999999978f * fConst0)));
+		fConst2 = (1.0f / std::max<float>(1.0f, (0.0199999996f * fConst0)));
 		fConst3 = (1.0f / std::max<float>(1.0f, (0.600000024f * fConst0)));
 		fConst4 = (220.0f / fConst0);
 	}
 	
 	virtual void instanceResetUserInterface() {
-		fEntry0 = FAUSTFLOAT(0.10000000000000001f);
-		fEntry1 = FAUSTFLOAT(60.0f);
+		fHslider0 = FAUSTFLOAT(0.10000000000000001f);
+		fHslider1 = FAUSTFLOAT(60.0f);
 		fButton0 = FAUSTFLOAT(0.0f);
 	}
 	
@@ -9348,9 +9348,9 @@ class mydsp : public dsp {
 	}
 	
 	virtual void buildUserInterface(UI* ui_interface) {
-		ui_interface->openVerticalBox("SineOscillator");
-		ui_interface->addNumEntry("freq", &fEntry1, FAUSTFLOAT(60.0f), FAUSTFLOAT(20.0f), FAUSTFLOAT(20000.0f), FAUSTFLOAT(0.00999999978f));
-		ui_interface->addNumEntry("gain", &fEntry0, FAUSTFLOAT(0.100000001f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(0.00999999978f));
+		ui_interface->openVerticalBox("SynthEngine");
+		ui_interface->addHorizontalSlider("freq", &fHslider1, FAUSTFLOAT(60.0f), FAUSTFLOAT(20.0f), FAUSTFLOAT(20000.0f), FAUSTFLOAT(0.00999999978f));
+		ui_interface->addHorizontalSlider("gain", &fHslider0, FAUSTFLOAT(0.100000001f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(0.00999999978f));
 		ui_interface->addButton("gate", &fButton0);
 		ui_interface->closeBox();
 	}
@@ -9358,8 +9358,8 @@ class mydsp : public dsp {
 	virtual void compute(int count, FAUSTFLOAT** RESTRICT inputs, FAUSTFLOAT** RESTRICT outputs) {
 		FAUSTFLOAT* output0 = outputs[0];
 		FAUSTFLOAT* output1 = outputs[1];
-		float fSlow0 = float(fEntry0);
-		float fSlow1 = std::pow(2.0f, (0.0833333358f * (float(fEntry1) + -69.0f)));
+		float fSlow0 = float(fHslider0);
+		float fSlow1 = std::pow(2.0f, (0.0833333358f * (float(fHslider1) + -69.0f)));
 		float fSlow2 = (fConst1 * fSlow1);
 		float fSlow3 = float(fButton0);
 		int iSlow4 = (fSlow3 == 0.0f);
@@ -9385,20 +9385,20 @@ class mydsp : public dsp {
 
 #ifdef FAUST_UIMACROS
 	
-	#define FAUST_FILE_NAME "SineOscillator.dsp"
+	#define FAUST_FILE_NAME "SynthEngine.dsp"
 	#define FAUST_CLASS_NAME "mydsp"
 	#define FAUST_INPUTS 0
 	#define FAUST_OUTPUTS 2
 	#define FAUST_ACTIVES 3
 	#define FAUST_PASSIVES 0
 
-	FAUST_ADDNUMENTRY("freq", fEntry1, 60.0f, 20.0f, 20000.0f, 0.01f);
-	FAUST_ADDNUMENTRY("gain", fEntry0, 0.10000000000000001f, 0.0f, 1.0f, 0.01f);
+	FAUST_ADDHORIZONTALSLIDER("freq", fHslider1, 60.0f, 20.0f, 20000.0f, 0.01f);
+	FAUST_ADDHORIZONTALSLIDER("gain", fHslider0, 0.10000000000000001f, 0.0f, 1.0f, 0.01f);
 	FAUST_ADDBUTTON("gate", fButton0);
 
 	#define FAUST_LIST_ACTIVES(p) \
-		p(NUMENTRY, freq, "freq", fEntry1, 60.0f, 20.0f, 20000.0f, 0.01f) \
-		p(NUMENTRY, gain, "gain", fEntry0, 0.10000000000000001f, 0.0f, 1.0f, 0.01f) \
+		p(HORIZONTALSLIDER, freq, "freq", fHslider1, 60.0f, 20.0f, 20000.0f, 0.01f) \
+		p(HORIZONTALSLIDER, gain, "gain", fHslider0, 0.10000000000000001f, 0.0f, 1.0f, 0.01f) \
 		p(BUTTON, gate, "gate", fButton0, 0.0f, 0.0f, 1.0f, 1.0f) \
 
 	#define FAUST_LIST_PASSIVES(p) \
@@ -9420,7 +9420,7 @@ std::list<GUI*> GUI::fGuiList;
 ztimedmap GUI::gTimedZoneMap;
 #endif
 
-SineOscillator::SineOscillator() : AudioStream(FAUST_INPUTS, new audio_block_t*[FAUST_INPUTS])
+SynthEngine::SynthEngine() : AudioStream(FAUST_INPUTS, new audio_block_t*[FAUST_INPUTS])
 {
 #ifdef NVOICES
     int nvoices = NVOICES;
@@ -9462,7 +9462,7 @@ SineOscillator::SineOscillator() : AudioStream(FAUST_INPUTS, new audio_block_t*[
 #endif
 }
 
-SineOscillator::~SineOscillator()
+SynthEngine::~SynthEngine()
 {
     delete fDSP;
     delete fUI;
@@ -9481,7 +9481,7 @@ SineOscillator::~SineOscillator()
 }
 
 template <int INPUTS, int OUTPUTS>
-void SineOscillator::updateImp(void)
+void SynthEngine::updateImp(void)
 {
 #if MIDICTRL
     // Process the MIDI messages received by the Teensy
@@ -9522,14 +9522,14 @@ void SineOscillator::updateImp(void)
     }
 }
 
-void SineOscillator::update(void) { updateImp<FAUST_INPUTS, FAUST_OUTPUTS>(); }
+void SynthEngine::update(void) { updateImp<FAUST_INPUTS, FAUST_OUTPUTS>(); }
 
-void SineOscillator::setParamValue(const std::string& path, float value)
+void SynthEngine::setParamValue(const std::string& path, float value)
 {
     fUI->setParamValue(path, value);
 }
 
-float SineOscillator::getParamValue(const std::string& path)
+float SynthEngine::getParamValue(const std::string& path)
 {
     return fUI->getParamValue(path);
 }

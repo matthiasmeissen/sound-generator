@@ -22,8 +22,8 @@
  
  ************************************************************************/
 
-#ifndef faust_SineOscillator_h_
-#define faust_SineOscillator_h_
+#ifndef faust_SynthEngine_h_
+#define faust_SynthEngine_h_
 
 #include <string>
 
@@ -39,12 +39,12 @@ class MidiUI;
 class teensy_midi;
 #endif
 
-class SineOscillator : public AudioStream
+class SynthEngine : public AudioStream
 {
     public:
     
-        SineOscillator();
-        ~SineOscillator();
+        SynthEngine();
+        ~SynthEngine();
     
         virtual void update(void);
     
