@@ -11,16 +11,17 @@ AudioConnection patchCord1(sineOscillator,0,out,1);
 
 // SineOscillator Params
 // freq - Midi notes converted to Frequency
+// gate - Triggers the envelope
 // gain - Gain of left and right Channels
 
 
 void OnNoteOn(byte channel, byte note, byte velocity) {
   sineOscillator.setParamValue("freq", note);
-  sineOscillator.setParamValue("gain", 0.1);
+  sineOscillator.setParamValue("gate", 1);
 }
 
 void OnNoteOff(byte channel, byte note, byte velocity) {
-  sineOscillator.setParamValue("gain", 0);
+  sineOscillator.setParamValue("gate", 0);
 }
 
 void setup() {
