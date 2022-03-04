@@ -18,6 +18,8 @@ AudioConnection patchCord1(synthEngine,0,out,1);
 void OnNoteOn(byte channel, byte note, byte velocity) {
   synthEngine.setParamValue("freq", note);
   synthEngine.setParamValue("gate", 1);
+
+  Serial.println("Note Played");
 }
 
 void OnNoteOff(byte channel, byte note, byte velocity) {
@@ -31,8 +33,6 @@ void setup() {
 
   usbMIDI.setHandleNoteOn(OnNoteOn);
   usbMIDI.setHandleNoteOff(OnNoteOff);
-
-  synthEngine.setParamValue("gain", 0.2);
 
   Serial.begin(38400);
 }
