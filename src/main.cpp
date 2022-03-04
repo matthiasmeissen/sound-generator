@@ -1,27 +1,27 @@
 #include <Arduino.h>
 #include <MIDI.h>
 #include <Audio.h>
-#include "SoundEngine.h"
+#include "SineOscillator.h"
 
-SoundEngine soundEngine;
+SineOscillator sineOscillator;
 AudioOutputI2S out;
 AudioControlSGTL5000 audioShield;
-AudioConnection patchCord0(soundEngine,0,out,0);
-AudioConnection patchCord1(soundEngine,0,out,1);
+AudioConnection patchCord0(sineOscillator,0,out,0);
+AudioConnection patchCord1(sineOscillator,0,out,1);
 
-// SoundEngine Params
+// SineOscillator Params
 // freq - Midi notes converted to Frequency
 // gate - Triggers the envelope
 // gain - Gain of left and right Channels
 
 
 void OnNoteOn(byte channel, byte note, byte velocity) {
-  soundEngine.setParamValue("freq", note);
-  soundEngine.setParamValue("gate", 1);
+  sineOscillator.setParamValue("freq", note);
+  sineOscillator.setParamValue("gate", 1);
 }
 
 void OnNoteOff(byte channel, byte note, byte velocity) {
-  soundEngine.setParamValue("gate", 0);
+  sineOscillator.setParamValue("gate", 0);
 }
 
 void setup() {
