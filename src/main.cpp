@@ -9,24 +9,31 @@ AudioControlSGTL5000 audioShield;
 AudioConnection patchCord0(sineOscillator,0,out,0);
 AudioConnection patchCord1(sineOscillator,0,out,1);
 
+// SineOscillator Params
+// freq - Midi notes converted to Frequency
+// gain - Gain of left and right Channels
 
-void makeNote(int note, int duration) {
-  usbMIDI.sendNoteOn(note, 127, 1);
-  delay(duration);
-  usbMIDI.sendNoteOff(note, 127, 1);
 
-  Serial.println("Note played");
+void OnNoteOn(byte channel, byte note, byte velocity) {
+  sineOscillator.setParamValue("freq", note);
+  sineOscillator.setParamValue("gain", 0.1);
+}
+
+void OnNoteOff(byte channel, byte note, byte velocity) {
+  sineOscillator.setParamValue("gain", 0);
 }
 
 void setup() {
   AudioMemory(2);
   audioShield.enable();
-  audioShield.volume(0.1);
+  audioShield.volume(0.8);
+
+  usbMIDI.setHandleNoteOn(OnNoteOn);
+  usbMIDI.setHandleNoteOff(OnNoteOff);
 
   Serial.begin(38400);
 }
 
 void loop() {
-  sineOscillator.setParamValue("freq",random(50,1000));
-  delay(50);
+  usbMIDI.read();
 }

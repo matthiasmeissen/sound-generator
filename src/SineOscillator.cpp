@@ -9242,6 +9242,7 @@ class mydsp : public dsp {
 	float fConst2;
 	float fRec0[2];
 	float fConst3;
+	float fConst4;
 	FAUSTFLOAT fEntry1;
 	float fRec3[2];
 	float fRec2[2];
@@ -9256,10 +9257,10 @@ class mydsp : public dsp {
 		m->declare("filename", "SineOscillator.dsp");
 		m->declare("library_path0", "/libraries/stdfaust.lib");
 		m->declare("library_path1", "/libraries/oscillators.lib");
-		m->declare("library_path2", "/libraries/signals.lib");
-		m->declare("library_path3", "/libraries/maths.lib");
-		m->declare("library_path4", "/libraries/platform.lib");
-		m->declare("library_path5", "/libraries/basics.lib");
+		m->declare("library_path2", "/libraries/basics.lib");
+		m->declare("library_path3", "/libraries/signals.lib");
+		m->declare("library_path4", "/libraries/maths.lib");
+		m->declare("library_path5", "/libraries/platform.lib");
 		m->declare("maths_lib_author", "GRAME");
 		m->declare("maths_lib_copyright", "GRAME");
 		m->declare("maths_lib_license", "LGPL with exception");
@@ -9278,7 +9279,7 @@ class mydsp : public dsp {
 		return 0;
 	}
 	virtual int getNumOutputs() {
-		return 1;
+		return 2;
 	}
 	
 	static void classInit(int sample_rate) {
@@ -9294,11 +9295,12 @@ class mydsp : public dsp {
 		fConst1 = (44.0999985f / fConst0);
 		fConst2 = (1.0f - fConst1);
 		fConst3 = (1.0f / fConst0);
+		fConst4 = (19404.0f / fConst0);
 	}
 	
 	virtual void instanceResetUserInterface() {
 		fEntry0 = FAUSTFLOAT(0.10000000000000001f);
-		fEntry1 = FAUSTFLOAT(440.0f);
+		fEntry1 = FAUSTFLOAT(60.0f);
 	}
 	
 	virtual void instanceClear() {
@@ -9333,21 +9335,24 @@ class mydsp : public dsp {
 	
 	virtual void buildUserInterface(UI* ui_interface) {
 		ui_interface->openVerticalBox("SineOscillator");
-		ui_interface->addNumEntry("freq", &fEntry1, FAUSTFLOAT(440.0f), FAUSTFLOAT(20.0f), FAUSTFLOAT(20000.0f), FAUSTFLOAT(0.00999999978f));
+		ui_interface->addNumEntry("freq", &fEntry1, FAUSTFLOAT(60.0f), FAUSTFLOAT(20.0f), FAUSTFLOAT(20000.0f), FAUSTFLOAT(0.00999999978f));
 		ui_interface->addNumEntry("gain", &fEntry0, FAUSTFLOAT(0.100000001f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(0.00999999978f));
 		ui_interface->closeBox();
 	}
 	
 	virtual void compute(int count, FAUSTFLOAT** RESTRICT inputs, FAUSTFLOAT** RESTRICT outputs) {
 		FAUSTFLOAT* output0 = outputs[0];
+		FAUSTFLOAT* output1 = outputs[1];
 		float fSlow0 = (fConst1 * float(fEntry0));
-		float fSlow1 = (fConst1 * float(fEntry1));
+		float fSlow1 = (fConst4 * std::pow(2.0f, (0.0833333358f * (float(fEntry1) + -69.0f))));
 		for (int i0 = 0; (i0 < count); i0 = (i0 + 1)) {
 			fRec0[0] = (fSlow0 + (fConst2 * fRec0[1]));
 			fRec3[0] = (fSlow1 + (fConst2 * fRec3[1]));
 			float fTemp0 = (fRec2[1] + (fConst3 * fRec3[0]));
 			fRec2[0] = (fTemp0 - std::floor(fTemp0));
-			output0[i0] = FAUSTFLOAT((fRec0[0] * ftbl0mydspSIG0[int((65536.0f * fRec2[0]))]));
+			float fTemp1 = (fRec0[0] * ftbl0mydspSIG0[int((65536.0f * fRec2[0]))]);
+			output0[i0] = FAUSTFLOAT(fTemp1);
+			output1[i0] = FAUSTFLOAT(fTemp1);
 			fRec0[1] = fRec0[0];
 			fRec3[1] = fRec3[0];
 			fRec2[1] = fRec2[0];
@@ -9361,15 +9366,15 @@ class mydsp : public dsp {
 	#define FAUST_FILE_NAME "SineOscillator.dsp"
 	#define FAUST_CLASS_NAME "mydsp"
 	#define FAUST_INPUTS 0
-	#define FAUST_OUTPUTS 1
+	#define FAUST_OUTPUTS 2
 	#define FAUST_ACTIVES 2
 	#define FAUST_PASSIVES 0
 
-	FAUST_ADDNUMENTRY("freq", fEntry1, 440.0f, 20.0f, 20000.0f, 0.01f);
+	FAUST_ADDNUMENTRY("freq", fEntry1, 60.0f, 20.0f, 20000.0f, 0.01f);
 	FAUST_ADDNUMENTRY("gain", fEntry0, 0.10000000000000001f, 0.0f, 1.0f, 0.01f);
 
 	#define FAUST_LIST_ACTIVES(p) \
-		p(NUMENTRY, freq, "freq", fEntry1, 440.0f, 20.0f, 20000.0f, 0.01f) \
+		p(NUMENTRY, freq, "freq", fEntry1, 60.0f, 20.0f, 20000.0f, 0.01f) \
 		p(NUMENTRY, gain, "gain", fEntry0, 0.10000000000000001f, 0.0f, 1.0f, 0.01f) \
 
 	#define FAUST_LIST_PASSIVES(p) \
