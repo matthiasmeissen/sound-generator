@@ -35,7 +35,7 @@ float mapf(float x, float in_min, float in_max, float out_min, float out_max) {
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(38400);
-
+  
   AudioMemory(2);
   audioShield.enable();
   audioShield.volume(0.8);
