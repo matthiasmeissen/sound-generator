@@ -9238,16 +9238,17 @@ class mydsp : public dsp {
 	
 	FAUSTFLOAT fHslider0;
 	int fSampleRate;
+	float fConst0;
 	float fConst1;
 	FAUSTFLOAT fHslider1;
 	float fRec1[2];
 	float fConst2;
 	float fRec2[2];
-	float fConst3;
+	FAUSTFLOAT fHslider2;
 	FAUSTFLOAT fButton0;
 	float fVec1[2];
 	float fRec3[2];
-	float fConst4;
+	FAUSTFLOAT fHslider3;
 	int iRec4[2];
 	
  public:
@@ -9298,17 +9299,17 @@ class mydsp : public dsp {
 	
 	virtual void instanceConstants(int sample_rate) {
 		fSampleRate = sample_rate;
-		float fConst0 = std::min<float>(192000.0f, std::max<float>(1.0f, float(fSampleRate)));
+		fConst0 = std::min<float>(192000.0f, std::max<float>(1.0f, float(fSampleRate)));
 		fConst1 = (440.0f / fConst0);
 		fConst2 = (220.0f / fConst0);
-		fConst3 = (1.0f / std::max<float>(1.0f, (0.0199999996f * fConst0)));
-		fConst4 = (1.0f / std::max<float>(1.0f, (0.600000024f * fConst0)));
 	}
 	
 	virtual void instanceResetUserInterface() {
 		fHslider0 = FAUSTFLOAT(0.10000000000000001f);
 		fHslider1 = FAUSTFLOAT(60.0f);
+		fHslider2 = FAUSTFLOAT(0.02f);
 		fButton0 = FAUSTFLOAT(0.0f);
+		fHslider3 = FAUSTFLOAT(0.59999999999999998f);
 	}
 	
 	virtual void instanceClear() {
@@ -9349,9 +9350,11 @@ class mydsp : public dsp {
 	
 	virtual void buildUserInterface(UI* ui_interface) {
 		ui_interface->openVerticalBox("SynthEngine");
+		ui_interface->addHorizontalSlider("attack", &fHslider2, FAUSTFLOAT(0.0199999996f), FAUSTFLOAT(0.0f), FAUSTFLOAT(2.0f), FAUSTFLOAT(0.00999999978f));
 		ui_interface->addHorizontalSlider("freq", &fHslider1, FAUSTFLOAT(60.0f), FAUSTFLOAT(20.0f), FAUSTFLOAT(20000.0f), FAUSTFLOAT(0.00999999978f));
 		ui_interface->addHorizontalSlider("gain", &fHslider0, FAUSTFLOAT(0.100000001f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(0.00999999978f));
 		ui_interface->addButton("gate", &fButton0);
+		ui_interface->addHorizontalSlider("release", &fHslider3, FAUSTFLOAT(0.600000024f), FAUSTFLOAT(0.0f), FAUSTFLOAT(2.0f), FAUSTFLOAT(0.00999999978f));
 		ui_interface->closeBox();
 	}
 	
@@ -9362,15 +9365,17 @@ class mydsp : public dsp {
 		float fSlow1 = std::pow(2.0f, (0.0833333358f * (float(fHslider1) + -69.0f)));
 		float fSlow2 = (fConst1 * fSlow1);
 		float fSlow3 = (fConst2 * fSlow1);
-		float fSlow4 = float(fButton0);
-		int iSlow5 = (fSlow4 == 0.0f);
+		float fSlow4 = (1.0f / std::max<float>(1.0f, (fConst0 * float(fHslider2))));
+		float fSlow5 = float(fButton0);
+		float fSlow6 = (1.0f / std::max<float>(1.0f, (fConst0 * float(fHslider3))));
+		int iSlow7 = (fSlow5 == 0.0f);
 		for (int i0 = 0; (i0 < count); i0 = (i0 + 1)) {
 			fRec1[0] = (fSlow2 + (fRec1[1] - std::floor((fSlow2 + fRec1[1]))));
 			fRec2[0] = (fSlow3 + (fRec2[1] - std::floor((fSlow3 + fRec2[1]))));
-			fVec1[0] = fSlow4;
-			fRec3[0] = (fSlow4 + (fRec3[1] * float((fVec1[1] >= fSlow4))));
-			iRec4[0] = (iSlow5 * (iRec4[1] + 1));
-			float fTemp0 = (fSlow0 * ((ftbl0mydspSIG0[int((65536.0f * fRec1[0]))] + ftbl0mydspSIG0[int((65536.0f * fRec2[0]))]) * std::max<float>(0.0f, (std::min<float>((fConst3 * fRec3[0]), 1.0f) * (1.0f - (fConst4 * float(iRec4[0])))))));
+			fVec1[0] = fSlow5;
+			fRec3[0] = (fSlow5 + (fRec3[1] * float((fVec1[1] >= fSlow5))));
+			iRec4[0] = (iSlow7 * (iRec4[1] + 1));
+			float fTemp0 = (fSlow0 * ((ftbl0mydspSIG0[int((65536.0f * fRec1[0]))] + ftbl0mydspSIG0[int((65536.0f * fRec2[0]))]) * std::max<float>(0.0f, (std::min<float>((fSlow4 * fRec3[0]), 1.0f) * (1.0f - (fSlow6 * float(iRec4[0])))))));
 			output0[i0] = FAUSTFLOAT(fTemp0);
 			output1[i0] = FAUSTFLOAT(fTemp0);
 			fRec1[1] = fRec1[0];
@@ -9389,17 +9394,21 @@ class mydsp : public dsp {
 	#define FAUST_CLASS_NAME "mydsp"
 	#define FAUST_INPUTS 0
 	#define FAUST_OUTPUTS 2
-	#define FAUST_ACTIVES 3
+	#define FAUST_ACTIVES 5
 	#define FAUST_PASSIVES 0
 
+	FAUST_ADDHORIZONTALSLIDER("attack", fHslider2, 0.02f, 0.0f, 2.0f, 0.01f);
 	FAUST_ADDHORIZONTALSLIDER("freq", fHslider1, 60.0f, 20.0f, 20000.0f, 0.01f);
 	FAUST_ADDHORIZONTALSLIDER("gain", fHslider0, 0.10000000000000001f, 0.0f, 1.0f, 0.01f);
 	FAUST_ADDBUTTON("gate", fButton0);
+	FAUST_ADDHORIZONTALSLIDER("release", fHslider3, 0.59999999999999998f, 0.0f, 2.0f, 0.01f);
 
 	#define FAUST_LIST_ACTIVES(p) \
+		p(HORIZONTALSLIDER, attack, "attack", fHslider2, 0.02f, 0.0f, 2.0f, 0.01f) \
 		p(HORIZONTALSLIDER, freq, "freq", fHslider1, 60.0f, 20.0f, 20000.0f, 0.01f) \
 		p(HORIZONTALSLIDER, gain, "gain", fHslider0, 0.10000000000000001f, 0.0f, 1.0f, 0.01f) \
 		p(BUTTON, gate, "gate", fButton0, 0.0f, 0.0f, 1.0f, 1.0f) \
+		p(HORIZONTALSLIDER, release, "release", fHslider3, 0.59999999999999998f, 0.0f, 2.0f, 0.01f) \
 
 	#define FAUST_LIST_PASSIVES(p) \
 

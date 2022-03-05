@@ -10,10 +10,31 @@ AudioConnection patchCord0(synthEngine,0,out,0);
 AudioConnection patchCord1(synthEngine,0,out,1);
 
 // SynthEngine Params
-// freq - Midi notes converted to Frequency
-// gate - Triggers the envelope
-// gain - Gain of left and right Channels
+//
+// freq       Oscillator Freq      Midi notes
+// attack     Attack envelope      0 - 2
+// release    Release envelope     0 - 2
+// gate       Trigger envelope     0 / 1
+// gain       Gain Stereo          0 - 1
 
+
+// Utility Functions
+
+float mapf(float x, float in_min, float in_max, float out_min, float out_max) {
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+float norm(int x) {
+  return (x - 0.0) * (1.0 - 0.0) / (127.0 - 0.0) + 0.0;
+}
+
+void report(char* label, float value) {
+  Serial.print(label);
+  Serial.println(value);
+}
+
+
+// Midi Handling
 
 void OnNoteOn(byte channel, byte note, byte velocity) {
   synthEngine.setParamValue("freq", note);
@@ -28,9 +49,23 @@ void OnNoteOff(byte channel, byte note, byte velocity) {
   synthEngine.setParamValue("gate", 0);
 }
 
-float mapf(float x, float in_min, float in_max, float out_min, float out_max) {
-  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+void OnControlChange(byte channel, byte control, byte value) {
+  if (control == 100) {
+    float val = norm(value);
+    synthEngine.setParamValue("attack", val);
+
+    report("Attack ", val);
+  }
+  if (control == 101) {
+    float val = norm(value);
+    synthEngine.setParamValue("release", val);
+
+    report("Release ", val);
+  }
 }
+
+
+// Runs once when loaded
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
@@ -42,7 +77,11 @@ void setup() {
 
   usbMIDI.setHandleNoteOn(OnNoteOn);
   usbMIDI.setHandleNoteOff(OnNoteOff);
+  usbMIDI.setHandleControlChange(OnControlChange);
 }
+
+
+// Runs often
 
 void loop() {
   usbMIDI.read();
