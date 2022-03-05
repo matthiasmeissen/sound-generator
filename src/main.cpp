@@ -19,24 +19,37 @@ void OnNoteOn(byte channel, byte note, byte velocity) {
   soundEngine.setParamValue("freq", note);
   soundEngine.setParamValue("gate", 1);
 
+  digitalWrite(LED_BUILTIN, HIGH);
   Serial.println("Note Played");
 }
 
 void OnNoteOff(byte channel, byte note, byte velocity) {
+  digitalWrite(LED_BUILTIN, LOW);
   soundEngine.setParamValue("gate", 0);
 }
 
+float mapf(float x, float in_min, float in_max, float out_min, float out_max) {
+  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 void setup() {
+  pinMode(LED_BUILTIN, OUTPUT);
+  Serial.begin(38400);
+
   AudioMemory(2);
   audioShield.enable();
   audioShield.volume(0.8);
 
   usbMIDI.setHandleNoteOn(OnNoteOn);
   usbMIDI.setHandleNoteOff(OnNoteOff);
-
-  Serial.begin(38400);
 }
 
 void loop() {
   usbMIDI.read();
+
+  float num = mapf(120, 0, 127, 0, 1);
+
+  Serial.println(num);
+
+  delay(1000);
 }
