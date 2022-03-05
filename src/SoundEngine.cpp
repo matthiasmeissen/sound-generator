@@ -1,5 +1,5 @@
 /* ------------------------------------------------------------
-name: "SynthEngine", "FaustDSP"
+name: "SoundEngine", "FaustDSP"
 Code generated with Faust 2.38.16 (https://faust.grame.fr)
 Compilation options: -a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -es 1 -mcd 16 -uim -single -ftz 0 
 ------------------------------------------------------------ */
@@ -44,7 +44,7 @@ Compilation options: -a /usr/local/share/faust/teensy/teensy.cpp -lang cpp -i -e
 
 #include <string.h> // for memset
 
-#include "SynthEngine.h"
+#include "SoundEngine.h"
 
 // IMPORTANT: in order for MapUI to work, the teensy linker must be g++
 /************************** BEGIN MapUI.h **************************/
@@ -9242,13 +9242,13 @@ class mydsp : public dsp {
 	FAUSTFLOAT fHslider1;
 	float fRec1[2];
 	float fConst2;
-	FAUSTFLOAT fButton0;
-	float fVec1[2];
 	float fRec2[2];
 	float fConst3;
-	int iRec3[2];
+	FAUSTFLOAT fButton0;
+	float fVec1[2];
+	float fRec3[2];
 	float fConst4;
-	float fRec4[2];
+	int iRec4[2];
 	
  public:
 	
@@ -9263,7 +9263,7 @@ class mydsp : public dsp {
 		m->declare("envelopes_lib_license", "LGPL with exception");
 		m->declare("envelopes_lib_name", "Faust Envelope Library");
 		m->declare("envelopes_lib_version", "0.1");
-		m->declare("filename", "SynthEngine.dsp");
+		m->declare("filename", "SoundEngine.dsp");
 		m->declare("library_path0", "/libraries/stdfaust.lib");
 		m->declare("library_path1", "/libraries/oscillators.lib");
 		m->declare("library_path2", "/libraries/basics.lib");
@@ -9275,7 +9275,7 @@ class mydsp : public dsp {
 		m->declare("maths_lib_license", "LGPL with exception");
 		m->declare("maths_lib_name", "Faust Math Library");
 		m->declare("maths_lib_version", "2.5");
-		m->declare("name", "SynthEngine");
+		m->declare("name", "SoundEngine");
 		m->declare("oscillators_lib_name", "Faust Oscillator Library");
 		m->declare("oscillators_lib_version", "0.3");
 		m->declare("platform_lib_name", "Generic Platform Library");
@@ -9300,9 +9300,9 @@ class mydsp : public dsp {
 		fSampleRate = sample_rate;
 		float fConst0 = std::min<float>(192000.0f, std::max<float>(1.0f, float(fSampleRate)));
 		fConst1 = (440.0f / fConst0);
-		fConst2 = (1.0f / std::max<float>(1.0f, (0.0199999996f * fConst0)));
-		fConst3 = (1.0f / std::max<float>(1.0f, (0.600000024f * fConst0)));
-		fConst4 = (220.0f / fConst0);
+		fConst2 = (220.0f / fConst0);
+		fConst3 = (1.0f / std::max<float>(1.0f, (0.0199999996f * fConst0)));
+		fConst4 = (1.0f / std::max<float>(1.0f, (0.600000024f * fConst0)));
 	}
 	
 	virtual void instanceResetUserInterface() {
@@ -9316,16 +9316,16 @@ class mydsp : public dsp {
 			fRec1[l2] = 0.0f;
 		}
 		for (int l3 = 0; (l3 < 2); l3 = (l3 + 1)) {
-			fVec1[l3] = 0.0f;
+			fRec2[l3] = 0.0f;
 		}
 		for (int l4 = 0; (l4 < 2); l4 = (l4 + 1)) {
-			fRec2[l4] = 0.0f;
+			fVec1[l4] = 0.0f;
 		}
 		for (int l5 = 0; (l5 < 2); l5 = (l5 + 1)) {
-			iRec3[l5] = 0;
+			fRec3[l5] = 0.0f;
 		}
 		for (int l6 = 0; (l6 < 2); l6 = (l6 + 1)) {
-			fRec4[l6] = 0.0f;
+			iRec4[l6] = 0;
 		}
 	}
 	
@@ -9348,7 +9348,7 @@ class mydsp : public dsp {
 	}
 	
 	virtual void buildUserInterface(UI* ui_interface) {
-		ui_interface->openVerticalBox("SynthEngine");
+		ui_interface->openVerticalBox("SoundEngine");
 		ui_interface->addHorizontalSlider("freq", &fHslider1, FAUSTFLOAT(60.0f), FAUSTFLOAT(20.0f), FAUSTFLOAT(20000.0f), FAUSTFLOAT(0.00999999978f));
 		ui_interface->addHorizontalSlider("gain", &fHslider0, FAUSTFLOAT(0.100000001f), FAUSTFLOAT(0.0f), FAUSTFLOAT(1.0f), FAUSTFLOAT(0.00999999978f));
 		ui_interface->addButton("gate", &fButton0);
@@ -9361,23 +9361,23 @@ class mydsp : public dsp {
 		float fSlow0 = float(fHslider0);
 		float fSlow1 = std::pow(2.0f, (0.0833333358f * (float(fHslider1) + -69.0f)));
 		float fSlow2 = (fConst1 * fSlow1);
-		float fSlow3 = float(fButton0);
-		int iSlow4 = (fSlow3 == 0.0f);
-		float fSlow5 = (fConst4 * fSlow1);
+		float fSlow3 = (fConst2 * fSlow1);
+		float fSlow4 = float(fButton0);
+		int iSlow5 = (fSlow4 == 0.0f);
 		for (int i0 = 0; (i0 < count); i0 = (i0 + 1)) {
 			fRec1[0] = (fSlow2 + (fRec1[1] - std::floor((fSlow2 + fRec1[1]))));
-			fVec1[0] = fSlow3;
-			fRec2[0] = (fSlow3 + (fRec2[1] * float((fVec1[1] >= fSlow3))));
-			iRec3[0] = (iSlow4 * (iRec3[1] + 1));
-			float fTemp0 = std::max<float>(0.0f, (std::min<float>((fConst2 * fRec2[0]), 1.0f) * (1.0f - (fConst3 * float(iRec3[0])))));
-			output0[i0] = FAUSTFLOAT((fSlow0 * (ftbl0mydspSIG0[int((65536.0f * fRec1[0]))] * fTemp0)));
-			fRec4[0] = (fSlow5 + (fRec4[1] - std::floor((fSlow5 + fRec4[1]))));
-			output1[i0] = FAUSTFLOAT((fSlow0 * (fTemp0 * ftbl0mydspSIG0[int((65536.0f * fRec4[0]))])));
+			fRec2[0] = (fSlow3 + (fRec2[1] - std::floor((fSlow3 + fRec2[1]))));
+			fVec1[0] = fSlow4;
+			fRec3[0] = (fSlow4 + (fRec3[1] * float((fVec1[1] >= fSlow4))));
+			iRec4[0] = (iSlow5 * (iRec4[1] + 1));
+			float fTemp0 = (fSlow0 * ((ftbl0mydspSIG0[int((65536.0f * fRec1[0]))] + ftbl0mydspSIG0[int((65536.0f * fRec2[0]))]) * std::max<float>(0.0f, (std::min<float>((fConst3 * fRec3[0]), 1.0f) * (1.0f - (fConst4 * float(iRec4[0])))))));
+			output0[i0] = FAUSTFLOAT(fTemp0);
+			output1[i0] = FAUSTFLOAT(fTemp0);
 			fRec1[1] = fRec1[0];
-			fVec1[1] = fVec1[0];
 			fRec2[1] = fRec2[0];
-			iRec3[1] = iRec3[0];
-			fRec4[1] = fRec4[0];
+			fVec1[1] = fVec1[0];
+			fRec3[1] = fRec3[0];
+			iRec4[1] = iRec4[0];
 		}
 	}
 
@@ -9385,7 +9385,7 @@ class mydsp : public dsp {
 
 #ifdef FAUST_UIMACROS
 	
-	#define FAUST_FILE_NAME "SynthEngine.dsp"
+	#define FAUST_FILE_NAME "SoundEngine.dsp"
 	#define FAUST_CLASS_NAME "mydsp"
 	#define FAUST_INPUTS 0
 	#define FAUST_OUTPUTS 2
@@ -9420,7 +9420,7 @@ std::list<GUI*> GUI::fGuiList;
 ztimedmap GUI::gTimedZoneMap;
 #endif
 
-SynthEngine::SynthEngine() : AudioStream(FAUST_INPUTS, new audio_block_t*[FAUST_INPUTS])
+SoundEngine::SoundEngine() : AudioStream(FAUST_INPUTS, new audio_block_t*[FAUST_INPUTS])
 {
 #ifdef NVOICES
     int nvoices = NVOICES;
@@ -9462,7 +9462,7 @@ SynthEngine::SynthEngine() : AudioStream(FAUST_INPUTS, new audio_block_t*[FAUST_
 #endif
 }
 
-SynthEngine::~SynthEngine()
+SoundEngine::~SoundEngine()
 {
     delete fDSP;
     delete fUI;
@@ -9481,7 +9481,7 @@ SynthEngine::~SynthEngine()
 }
 
 template <int INPUTS, int OUTPUTS>
-void SynthEngine::updateImp(void)
+void SoundEngine::updateImp(void)
 {
 #if MIDICTRL
     // Process the MIDI messages received by the Teensy
@@ -9522,14 +9522,14 @@ void SynthEngine::updateImp(void)
     }
 }
 
-void SynthEngine::update(void) { updateImp<FAUST_INPUTS, FAUST_OUTPUTS>(); }
+void SoundEngine::update(void) { updateImp<FAUST_INPUTS, FAUST_OUTPUTS>(); }
 
-void SynthEngine::setParamValue(const std::string& path, float value)
+void SoundEngine::setParamValue(const std::string& path, float value)
 {
     fUI->setParamValue(path, value);
 }
 
-float SynthEngine::getParamValue(const std::string& path)
+float SoundEngine::getParamValue(const std::string& path)
 {
     return fUI->getParamValue(path);
 }
