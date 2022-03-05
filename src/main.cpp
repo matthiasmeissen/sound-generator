@@ -46,10 +46,4 @@ void setup() {
 
 void loop() {
   usbMIDI.read();
-
-  float num = mapf(120, 0, 127, 0, 1);
-
-  Serial.println(num);
-
-  delay(1000);
 }
