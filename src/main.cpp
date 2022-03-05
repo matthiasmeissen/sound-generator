@@ -1,23 +1,23 @@
 #include <Arduino.h>
 #include <MIDI.h>
 #include <Audio.h>
-#include "SoundEngine.h"
+#include "SynthEngine.h"
 
-SoundEngine soundEngine;
+SynthEngine synthEngine;
 AudioOutputI2S out;
 AudioControlSGTL5000 audioShield;
-AudioConnection patchCord0(soundEngine,0,out,0);
-AudioConnection patchCord1(soundEngine,0,out,1);
+AudioConnection patchCord0(synthEngine,0,out,0);
+AudioConnection patchCord1(synthEngine,0,out,1);
 
-// SoundEngine Params
+// SynthEngine Params
 // freq - Midi notes converted to Frequency
 // gate - Triggers the envelope
 // gain - Gain of left and right Channels
 
 
 void OnNoteOn(byte channel, byte note, byte velocity) {
-  soundEngine.setParamValue("freq", note);
-  soundEngine.setParamValue("gate", 1);
+  synthEngine.setParamValue("freq", note);
+  synthEngine.setParamValue("gate", 1);
 
   digitalWrite(LED_BUILTIN, HIGH);
   Serial.println("Note Played");
@@ -25,7 +25,7 @@ void OnNoteOn(byte channel, byte note, byte velocity) {
 
 void OnNoteOff(byte channel, byte note, byte velocity) {
   digitalWrite(LED_BUILTIN, LOW);
-  soundEngine.setParamValue("gate", 0);
+  synthEngine.setParamValue("gate", 0);
 }
 
 float mapf(float x, float in_min, float in_max, float out_min, float out_max) {
