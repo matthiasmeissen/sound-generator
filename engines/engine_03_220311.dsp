@@ -12,6 +12,6 @@ osc2 = os.oscsin(freq / 2) * gain;
 
 osc = (osc1 + osc2) * env1;
 
-echo (d,f) = + ~ (@(d) : *(f));
+echo (d, f) = + ~ (@(d) : *(f));
 
-process = osc : echo(ma.SR / 4, 0.6) <: _,_;
+process = osc : echo(ma.SR / 4, 0.8) <: _,_;
