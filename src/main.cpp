@@ -11,11 +11,14 @@ AudioConnection patchCord1(synthEngine,0,out,1);
 
 // SynthEngine Params
 //
-// freq       Oscillator Freq      Midi notes
-// attack     Attack envelope      0 - 2
-// release    Release envelope     0 - 2
-// gate       Trigger envelope     0 / 1
-// gain       Gain Stereo          0 - 1
+// freq       Oscillator Freq       Midi notes
+// attack     Attack envelope       0 - 2
+// release    Release envelope      0 - 2
+// gate       Trigger envelope      0 / 1
+// ampsine    Amplitude SineOsc     0 - 1
+// amptri     Amplitude TriOsc      0 - 1
+// ampsquare  Amplitude SquareOsc   0 - 1
+// gain       Gain Stereo           0 - 1
 
 
 // Utility Functions
@@ -53,14 +56,27 @@ void OnControlChange(byte channel, byte control, byte value) {
   if (control == 100) {
     float val = norm(value);
     synthEngine.setParamValue("attack", val);
-
     report("Attack ", val);
   }
   if (control == 101) {
     float val = norm(value);
     synthEngine.setParamValue("release", val);
-
     report("Release ", val);
+  }
+  if (control == 102) {
+    float val = norm(value);
+    synthEngine.setParamValue("ampsine", val);
+    report("Amp Sine ", val);
+  }
+  if (control == 103) {
+    float val = norm(value);
+    synthEngine.setParamValue("amptri", val);
+    report("Amp Tri ", val);
+  }
+  if (control == 104) {
+    float val = norm(value);
+    synthEngine.setParamValue("ampsquare", val);
+    report("Amp Square ", val);
   }
 }
 
