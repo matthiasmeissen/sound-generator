@@ -23,12 +23,22 @@ AudioConnection patchCord1(synthEngine,0,out,1);
 
 // Utility Functions
 
+// mapf
+// lets you map a float value to a specific range
+
 float mapf(float x, float in_min, float in_max, float out_min, float out_max) {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
+// norm
+// Maps a number ranging from 0-127 to 0-1
+
 float norm(int x) {
   return (x - 0.0) * (1.0 - 0.0) / (127.0 - 0.0) + 0.0;
+}
+
+float midiToRange(int x, float out_min, float out_max) {
+  return (x - 0.0) * (out_max - out_min) / (127.0 - 0.0) + out_min;
 }
 
 void report(char* label, float value) {
