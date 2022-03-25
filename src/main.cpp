@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <MIDI.h>
 #include <Audio.h>
+#include "Display.h"
 #include "SynthEngine.h"
 
 SynthEngine synthEngine;
@@ -104,6 +105,18 @@ void setup() {
   usbMIDI.setHandleNoteOn(OnNoteOn);
   usbMIDI.setHandleNoteOff(OnNoteOff);
   usbMIDI.setHandleControlChange(OnControlChange);
+
+
+  initDisplay();
+
+  clearDisplay();
+
+  drawCircle(20);
+  drawText();
+  drawLine();
+  drawRectangle();
+
+  updateDisplay();
 }
 
 
