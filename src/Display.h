@@ -7,7 +7,7 @@
 #include <Adafruit_SSD1306.h>
 
 void initDisplay();
-void updateDisplay();
+void drawDisplay();
 void clearDisplay();
 void drawCircle(float r);
 void drawText(float num);

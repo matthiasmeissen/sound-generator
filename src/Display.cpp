@@ -16,7 +16,7 @@ void initDisplay() {
     }
 }
 
-void updateDisplay() {
+void drawDisplay() {
     display.display();
 }
 

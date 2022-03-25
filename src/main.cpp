@@ -10,19 +10,17 @@ AudioControlSGTL5000 audioShield;
 AudioConnection patchCord0(synthEngine,0,out,0);
 AudioConnection patchCord1(synthEngine,0,out,1);
 
+
 // SynthEngine Params
-//
-// freq       Oscillator Freq       Midi notes
 
-float freq;
-
-// attack     Attack envelope       0 - 2
-// release    Release envelope      0 - 2
-// gate       Trigger envelope      0 / 1
-// ampsine    Amplitude SineOsc     0 - 1
-// amptri     Amplitude TriOsc      0 - 1
-// ampsquare  Amplitude SquareOsc   0 - 1
-// gain       Gain Stereo           0 - 1
+float freq;       // freq       Oscillator Freq       Midi notes
+float attack;     // attack     Attack envelope       0 - 2
+float release;    // release    Release envelope      0 - 2
+int gate;         // gate       Trigger envelope      0 / 1
+float ampsine;    // ampsine    Amplitude SineOsc     0 - 1
+float amptri;     // amptri     Amplitude TriOsc      0 - 1
+float ampsquare;  // ampsquare  Amplitude SquareOsc   0 - 1
+float gain;       // gain       Gain Stereo           0 - 1
 
 
 // Utility Functions
@@ -51,6 +49,16 @@ void report(char* label, float value) {
 }
 
 
+// Screen Functions
+
+void updateScreen() {
+  clearDisplay();
+  drawCircle(20);
+  drawLine();
+  drawRectangle();
+}
+
+
 // Midi Handling
 
 void OnNoteOn(byte channel, byte note, byte velocity) {
@@ -61,6 +69,10 @@ void OnNoteOn(byte channel, byte note, byte velocity) {
 
   digitalWrite(LED_BUILTIN, HIGH);
   Serial.println("Note Played");
+
+  updateScreen();
+  drawText(freq);
+  drawDisplay();
 }
 
 void OnNoteOff(byte channel, byte note, byte velocity) {
@@ -113,20 +125,13 @@ void setup() {
 
 
   initDisplay();
+  updateScreen();
+  drawDisplay();
 }
 
 
 // Runs often
 
 void loop() {
-  clearDisplay();
-
   usbMIDI.read();
-
-  drawCircle(20);
-  drawText(freq);
-  drawLine();
-  drawRectangle();
-
-  updateDisplay();
 }
