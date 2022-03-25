@@ -10,10 +10,10 @@ with {
     gain = hslider("[5]gain", 0.2, 0, 1, 0.01);
 };
 
-lfo = (os.oscsin(freq) * 0.5 + 0.5) * amplitude
+lfo = (os.oscsin(freq) * 0.5 + 0.5) * amplitude * 400
 with {
     freq = hslider("speed", 1, 0.1, 20, 0.01);
-    amplitude = hslider("amplitude", 80, 0, 200, 0.01);
+    amplitude = hslider("amplitude", 0.2, 0, 1, 0.001);
 };
 
 freq = hslider("[6]freq",60,0,127,1) : ba.midikey2hz + lfo;
