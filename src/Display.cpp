@@ -30,14 +30,14 @@ void drawCircle(float r) {
   display.fillCircle(display.width()/2, display.height()/2, r-8, SSD1306_WHITE);
 }
 
-void drawText() {
+void drawText(float num) {
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0,0);
   display.println(F("Text"));
   
   display.setTextColor(SSD1306_BLACK, SSD1306_WHITE);
-  display.println(200);
+  display.println(num);
 }
 
 void drawLine() {

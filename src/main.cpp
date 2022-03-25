@@ -13,6 +13,9 @@ AudioConnection patchCord1(synthEngine,0,out,1);
 // SynthEngine Params
 //
 // freq       Oscillator Freq       Midi notes
+
+float freq;
+
 // attack     Attack envelope       0 - 2
 // release    Release envelope      0 - 2
 // gate       Trigger envelope      0 / 1
@@ -51,7 +54,9 @@ void report(char* label, float value) {
 // Midi Handling
 
 void OnNoteOn(byte channel, byte note, byte velocity) {
-  synthEngine.setParamValue("freq", note);
+  freq = note;
+
+  synthEngine.setParamValue("freq", freq);
   synthEngine.setParamValue("gate", 1);
 
   digitalWrite(LED_BUILTIN, HIGH);
@@ -108,20 +113,20 @@ void setup() {
 
 
   initDisplay();
-
-  clearDisplay();
-
-  drawCircle(20);
-  drawText();
-  drawLine();
-  drawRectangle();
-
-  updateDisplay();
 }
 
 
 // Runs often
 
 void loop() {
+  clearDisplay();
+
   usbMIDI.read();
+
+  drawCircle(20);
+  drawText(freq);
+  drawLine();
+  drawRectangle();
+
+  updateDisplay();
 }

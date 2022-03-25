@@ -10,7 +10,7 @@ void initDisplay();
 void updateDisplay();
 void clearDisplay();
 void drawCircle(float r);
-void drawText();
+void drawText(float num);
 void drawLine();
 void drawRectangle();
 
