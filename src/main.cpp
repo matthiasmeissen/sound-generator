@@ -39,6 +39,9 @@ float norm(int x) {
   return (x - 0.0) * (1.0 - 0.0) / (127.0 - 0.0) + 0.0;
 }
 
+// midiToRange
+// Maps a number ranging from 0-127 to a specific range
+
 float midiToRange(int x, float out_min, float out_max) {
   return (x - 0.0) * (out_max - out_min) / (127.0 - 0.0) + out_min;
 }
@@ -53,7 +56,8 @@ void report(char* label, float value) {
 
 void updateScreen() {
   clearDisplay();
-  drawLevel(20, 20, 0.6);
+  drawLevel(20, 20, attack);
+  drawDisplay();
 }
 
 
@@ -67,10 +71,6 @@ void OnNoteOn(byte channel, byte note, byte velocity) {
 
   digitalWrite(LED_BUILTIN, HIGH);
   Serial.println("Note Played");
-
-  updateScreen();
-  drawText(freq);
-  drawDisplay();
 }
 
 void OnNoteOff(byte channel, byte note, byte velocity) {
@@ -80,9 +80,9 @@ void OnNoteOff(byte channel, byte note, byte velocity) {
 
 void OnControlChange(byte channel, byte control, byte value) {
   if (control == 100) {
-    float val = norm(value);
-    synthEngine.setParamValue("attack", val);
-    report("Attack ", val);
+    attack = norm(value);
+    synthEngine.setParamValue("attack", attack);
+    report("Attack", attack);
   }
   if (control == 101) {
     float val = norm(value);
@@ -132,4 +132,9 @@ void setup() {
 
 void loop() {
   usbMIDI.read();
+
+  if (millis() % 100 == 1) {
+    updateScreen();
+  }
+  
 }

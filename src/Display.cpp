@@ -63,7 +63,6 @@ void drawLevel(int posX, int posY, float value) {
     display.drawLine(posX + 13, (posY + 19) - i, posX + 17, (posY + 19) - i, SSD1306_WHITE);
   }
 
-
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(posX + 8, posY + 23);
