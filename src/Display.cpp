@@ -49,16 +49,24 @@ void drawRectangle() {
 }
 
 void drawLevel(int posX, int posY, float value) {
-  display.drawLine(posX + 1, posY, posX + 7, posY, SSD1306_WHITE);
-  display.drawLine(posX + 1, posY + 20, posX + 7, posY + 20, SSD1306_WHITE);
-  display.drawLine(posX, posY + 1, posX, posY + 19, SSD1306_WHITE);
-  display.drawLine(posX + 8, posY + 1, posX + 8, posY + 19, SSD1306_WHITE);
+  display.drawLine(posX + 12, posY + 1, posX + 18, posY + 1, SSD1306_WHITE);
+  display.drawLine(posX + 12, posY + 21, posX + 18, posY + 21, SSD1306_WHITE);
+  display.drawLine(posX + 11, posY + 2, posX + 11, posY + 20, SSD1306_WHITE);
+  display.drawLine(posX + 19, posY + 2, posX + 19, posY + 20, SSD1306_WHITE);
 
   for (size_t i = 0; i < 10; i++) {
-    display.drawPixel(posX + 2, posY + i * 2, SSD1306_WHITE);
-    display.drawPixel(posX + 6, posY + i * 2, SSD1306_WHITE);
+    display.drawPixel(posX + 13, (posY + 3) + i * 2, SSD1306_WHITE);
+    display.drawPixel(posX + 17, (posY + 3) + i * 2, SSD1306_WHITE);
   }
 
-  display.fillRect(posX + 2, posY + 2, 5, 17, SSD1306_WHITE);
+  for (size_t i = 0; i < 17 * value; i++) {
+    display.drawLine(posX + 13, (posY + 19) - i, posX + 17, (posY + 19) - i, SSD1306_WHITE);
+  }
+
+
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(posX + 8, posY + 23);
+  display.println(F("LEV"));
   
 }
