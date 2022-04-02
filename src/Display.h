@@ -13,5 +13,6 @@ void drawCircle(float r);
 void drawText(float num);
 void drawLine();
 void drawRectangle();
+void drawLevel(int posX, int posY, float value);
 
 #endif

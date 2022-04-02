@@ -53,9 +53,7 @@ void report(char* label, float value) {
 
 void updateScreen() {
   clearDisplay();
-  drawCircle(20);
-  drawLine();
-  drawRectangle();
+  drawLevel(20, 20, 0.1);
 }
 
 
