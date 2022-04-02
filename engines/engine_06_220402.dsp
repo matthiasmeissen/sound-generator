@@ -1,6 +1,6 @@
 import("stdfaust.lib");
 
-envelope = vgroup("Envelope", en.adsr(attack, decay, sustain, release, gate)) * gain
+envelope = gate : vgroup("Envelope", en.adsr(attack, decay, sustain, release)) * gain
 with {
     attack = hslider("[1]attack", 50, 0.01, 1000, 1) * 0.001;
     decay = hslider("[2]decay", 50, 0.01, 1000, 1) * 0.001;
