@@ -1,5 +1,13 @@
 import("stdfaust.lib");
 
+declare paramFreq "freq (0-127)";
+declare paramOsc "osc (0-4)";
+declare paramGate "gate (1)";
+declare paramAtttack "att (0.01-1000)";
+declare paramRelease "rel (0.01-1000)";
+declare paramGain "gain (0-1)";
+
+
 freq = hslider("[1]freq",60,0,127,1) : ba.midikey2hz;
 
 osc = os.oscsin(freq), os.triangle(freq), os.sawtooth(freq), os.square(freq), no.noise : ba.selectn(5, num)
