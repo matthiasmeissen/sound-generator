@@ -13,14 +13,12 @@ AudioConnection patchCord1(synthEngine,0,out,1);
 
 // SynthEngine Params
 
-float freq;       // freq       Oscillator Freq       Midi notes
-float attack;     // attack     Attack envelope       0 - 2
-float release;    // release    Release envelope      0 - 2
-int gate;         // gate       Trigger envelope      0 / 1
-float ampsine;    // ampsine    Amplitude SineOsc     0 - 1
-float amptri;     // amptri     Amplitude TriOsc      0 - 1
-float ampsquare;  // ampsquare  Amplitude SquareOsc   0 - 1
-float gain;       // gain       Gain Stereo           0 - 1
+int freq;       // freq       Oscillator Freq       Midi notes
+int osc;        // osc        Oscillator Type       0 - 4
+int gate;       // gate       Trigger envelope      0 / 1
+int att;        // attack     Attack envelope       0.01 - 1000
+int rel;        // release    Release envelope      0.01 - 1000
+int gain;       // gain       Gain Stereo           0 - 1
 
 
 // Utility Functions
@@ -54,11 +52,16 @@ void report(char* label, float value) {
 
 // Screen Functions
 
-void updateScreen() {
+void redraw() {
   clearDisplay();
-  drawLevel(20, 20, attack);
+  compLabel(0, 0, "OSC");
+  compSlider(32, 0, norm(gain), "LEV");
+  compKnob(32, 32, norm(att), "ATT");
+  compKnob(64, 32, norm(rel), "REL");
   drawDisplay();
 }
+
+int allowRedraw = 0;
 
 
 // Midi Handling
@@ -69,41 +72,39 @@ void OnNoteOn(byte channel, byte note, byte velocity) {
   synthEngine.setParamValue("freq", freq);
   synthEngine.setParamValue("gate", 1);
 
+  allowRedraw = 1;
+
   digitalWrite(LED_BUILTIN, HIGH);
-  Serial.println("Note Played");
 }
 
 void OnNoteOff(byte channel, byte note, byte velocity) {
-  digitalWrite(LED_BUILTIN, LOW);
   synthEngine.setParamValue("gate", 0);
+  digitalWrite(LED_BUILTIN, LOW);
 }
 
 void OnControlChange(byte channel, byte control, byte value) {
   if (control == 100) {
-    attack = norm(value);
-    synthEngine.setParamValue("attack", attack);
-    report("Attack", attack);
+    osc = value;
+    synthEngine.setParamValue("osc", osc);
+    report("Oscillator ", osc);
   }
   if (control == 101) {
-    float val = norm(value);
-    synthEngine.setParamValue("release", val);
-    report("Release ", val);
+    att = value;
+    synthEngine.setParamValue("att", mapf(att, 0, 127, 0.01, 1000));
+    report("Attack ", att);
   }
   if (control == 102) {
-    float val = norm(value);
-    synthEngine.setParamValue("ampsine", val);
-    report("Amp Sine ", val);
+    rel = value;
+    synthEngine.setParamValue("rel", mapf(rel, 0, 127, 0.01, 1000));
+    report("Release ", rel);
   }
   if (control == 103) {
-    float val = norm(value);
-    synthEngine.setParamValue("amptri", val);
-    report("Amp Tri ", val);
+    gain = value;
+    synthEngine.setParamValue("gain", norm(gain));
+    report("Gain ", gain);
   }
-  if (control == 104) {
-    float val = norm(value);
-    synthEngine.setParamValue("ampsquare", val);
-    report("Amp Square ", val);
-  }
+
+  allowRedraw = 1;
 }
 
 
@@ -123,8 +124,7 @@ void setup() {
 
 
   initDisplay();
-  updateScreen();
-  drawDisplay();
+  redraw();
 }
 
 
@@ -133,8 +133,8 @@ void setup() {
 void loop() {
   usbMIDI.read();
 
-  if (millis() % 100 == 1) {
-    updateScreen();
-  }
-  
+  if (millis() % 200 == 1 && allowRedraw) {
+    redraw();
+    allowRedraw = 0;
+  } 
 }

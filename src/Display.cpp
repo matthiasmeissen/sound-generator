@@ -24,31 +24,27 @@ void clearDisplay() {
     display.clearDisplay();
 }
 
-void drawCircle(float r) {
-  display.drawCircle(display.width()/2, display.height()/2, r, SSD1306_WHITE);
+void compLabel(int posX, int posY, char* label) {
+  display.drawRoundRect(posX, posY, 32, 32, 2, SSD1306_WHITE);
 
-  display.fillCircle(display.width()/2, display.height()/2, r-8, SSD1306_WHITE);
-}
-
-void drawText(float num) {
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
-  display.setCursor(0,0);
-  display.println(F("Text"));
-  
-  display.setTextColor(SSD1306_BLACK, SSD1306_WHITE);
-  display.println(num);
+  display.setCursor(posX + 8, posY + 14);
+  display.println(label); 
 }
 
-void drawLine() {
-  display.drawLine(4, display.height()-4, display.width()-4, display.height()-4, SSD1306_WHITE);
+void compKnob(int posX, int posY, float value, char* label) {
+  display.drawCircle(posX + 15, posY + 11, 10, SSD1306_WHITE);
+  display.drawPixel(posX + 15 + (cos(value * (2 * PI) + (0.5 * PI)) * 7), posY + 11 + (sin(value * (2 * PI) + (0.5 * PI)) * 7), SSD1306_WHITE);
+  display.drawPixel(posX + 15 + (cos(value * (2 * PI) + (0.5 * PI)) * 8), posY + 11 + (sin(value * (2 * PI) + (0.5 * PI)) * 8), SSD1306_WHITE);
+
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(posX + 8, posY + 23);
+  display.println(label);
 }
 
-void drawRectangle() {
-  display.drawRect(4, 20, 20, 32, SSD1306_WHITE);
-}
-
-void drawLevel(int posX, int posY, float value) {
+void compSlider(int posX, int posY, float value, char* label) {
   display.drawLine(posX + 12, posY + 1, posX + 18, posY + 1, SSD1306_WHITE);
   display.drawLine(posX + 12, posY + 21, posX + 18, posY + 21, SSD1306_WHITE);
   display.drawLine(posX + 11, posY + 2, posX + 11, posY + 20, SSD1306_WHITE);
@@ -66,6 +62,5 @@ void drawLevel(int posX, int posY, float value) {
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(posX + 8, posY + 23);
-  display.println(F("LEV"));
-  
+  display.println(label);
 }

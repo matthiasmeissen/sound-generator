@@ -9,10 +9,8 @@
 void initDisplay();
 void drawDisplay();
 void clearDisplay();
-void drawCircle(float r);
-void drawText(float num);
-void drawLine();
-void drawRectangle();
-void drawLevel(int posX, int posY, float value);
+void compLabel(int posX, int posY, char* label);
+void compKnob(int posX, int posY, float value, char* label);
+void compSlider(int posX, int posY, float value, char* label);
 
 #endif
