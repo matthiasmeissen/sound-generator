@@ -11,6 +11,7 @@ void drawDisplay();
 void clearDisplay();
 void compLabel(int posX, int posY, char* label);
 void compKnob(int posX, int posY, float value, char* label);
+void compWaves(int posX, int posY, int wave);
 void compSlider(int posX, int posY, float value, char* label);
 
 #endif
