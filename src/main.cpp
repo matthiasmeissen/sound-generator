@@ -69,7 +69,7 @@ int allowRedraw = 0;
 
 void OnNoteOn(byte channel, byte note, byte velocity) {
   freq = note;
-
+  
   synthEngine.setParamValue("freq", freq);
   synthEngine.setParamValue("gate", 1);
 
