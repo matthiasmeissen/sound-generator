@@ -55,10 +55,6 @@ void compKnob(int posX, int posY, float value, char* label) {
   display.println(label);
 }
 
-void compImage(int posX, int posY) {
-  display.drawBitmap(posX, posY, bmp_waves_0, 28, 28, SSD1306_WHITE);
-}
-
 void compWaves(int posX, int posY, int wave) {
   const unsigned char* waves [5] = {bmp_waves_0, bmp_waves_1, bmp_waves_2, bmp_waves_3, bmp_waves_4};
 

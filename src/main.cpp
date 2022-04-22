@@ -55,8 +55,8 @@ void report(char* label, float value) {
 void redraw() {
   clearDisplay();
   compLabel(0, 0, "OSC");
-  compSlider(32, 0, norm(gain), "LEV");
-  compWaves(64, 0, osc);
+  compSlider(0, 32, norm(gain), "LEV");
+  compWaves(32, 0, osc);
   compKnob(32, 32, norm(att), "ATT");
   compKnob(64, 32, norm(rel), "REL");
   drawDisplay();
